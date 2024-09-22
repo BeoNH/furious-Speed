@@ -6,5 +6,17 @@
       "height": 950
     }
   },
-  "custom_joint_texture_layouts": []
+  "custom_joint_texture_layouts": [],
+  "physics": {
+    "collisionGroups": [],
+    "collisionMatrix": {
+      "0": 5,
+      "1": 12,
+      "2": 3,
+      "3": 2
+    },
+    "gravity": {
+      "y": 0
+    }
+  }
 }

@@ -2,5 +2,10 @@
   "__version__": "1.0.1",
   "general": {
     "start_scene": "23fb34bf-7fa9-4611-8983-25876211ee76"
+  },
+  "preview": {
+    "current": {
+      "platform": "gameView"
+    }
   }
 }
