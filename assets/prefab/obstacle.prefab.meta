@@ -2,12 +2,12 @@
   "ver": "1.1.50",
   "importer": "prefab",
   "imported": true,
-  "uuid": "50bffc5a-5fbb-4e52-8695-3931e6188331",
+  "uuid": "31e16dba-4b79-437a-85a3-d14590998653",
   "files": [
     ".json"
   ],
   "subMetas": {},
   "userData": {
-    "syncNodeName": "obstacle_car_2-sheet0"
+    "syncNodeName": "obstacle"
   }
 }

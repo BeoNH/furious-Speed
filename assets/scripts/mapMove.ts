@@ -9,8 +9,8 @@ export class mapMove extends Component {
     const oldPos = this.node.position.clone();
     let moveDistance = GameManager.speedMap * dt;
     let posY = oldPos.y - moveDistance;
-    if (posY < -1100) {
-      posY = 1140;
+    if (posY < -1150) {
+      posY = 1150;
     }
     this.node.position = v3(oldPos.x, posY, oldPos.z);
   }

@@ -1,38 +1,39 @@
-import { _decorator, Collider2D, Component, Contact2DType, instantiate, IPhysics2DContact, Node, Prefab, Vec3 } from 'cc';
+import { _decorator, Component, instantiate, Prefab, Vec3 } from 'cc';
 import { GameManager } from './GameManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('MapControl')
 export class MapControl extends Component {
+    public static instantiate: MapControl;
 
     @property({ type: Prefab, tooltip: "vật cản" })
     private obstaclePrefab: Prefab = null;
 
-    @property({ type: Node, tooltip: "điểm xoá vật" })
-    private destroyPos: Node = null;
-
-    fixedXPositions: Vec3[] = [
-        new Vec3(-220, 600, 0), // Vị trí 1
-        new Vec3(-110, 600, 0), // Vị trí 2
-        new Vec3(0, 600, 0),    // Vị trí 3
-        new Vec3(110, 600, 0),  // Vị trí 4
-        new Vec3(220, 600, 0)   // Vị trí 5
-    ];
+    private previousIndex: number = -1; // Biến lưu lại kết quả trước đó
 
     onLoad() {
-        this.schedule(this.spawnObstacle, GameManager.spawnInterval);
+        MapControl.instantiate = this;
     }
 
     spawnObstacle() {
-        const randomIndex = Math.floor(Math.random() * this.fixedXPositions.length);
-        const spawnPosition = this.fixedXPositions[randomIndex];
+
+        const getRandomIndex = () => {
+            let randomIndex: number;
+        
+            do {
+                randomIndex = Math.floor(Math.random() * GameManager.fixedXPositions.length);
+            } while (randomIndex === this.previousIndex); // Lặp lại nếu trùng với kết quả trước đó
+        
+            this.previousIndex = randomIndex; // Cập nhật giá trị của kết quả trước đó
+            return randomIndex;
+        }
+
+        const spawnPosition = GameManager.fixedXPositions[getRandomIndex()];
 
         // Tạo vật cản
         const obstacle = instantiate(this.obstaclePrefab);
         obstacle.setPosition(spawnPosition);
         this.node.getChildByPath(`Barrier`).addChild(obstacle); // Thêm vật cản vào node cha
-
-        this.scheduleOnce(() => obstacle.destroy(), 5);
     }
 }
 
