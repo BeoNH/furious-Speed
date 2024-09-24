@@ -2,6 +2,7 @@ import { _decorator, Collider2D, Component, Contact2DType, EventKeyboard, Input,
 import { GameManager } from './GameManager';
 import { MapControl } from './MapControl';
 import { NumberScrolling } from './NumberScrolling';
+import { RewardRffect } from './RewardRffect';
 const { ccclass, property } = _decorator;
 
 @ccclass('GameControl')
@@ -16,11 +17,19 @@ export class GameControl extends Component {
   @property({ type: NumberScrolling, tooltip: "điểm người chơi" })
   private numScore: NumberScrolling = null;
 
+  @property({ type: Prefab, tooltip: "điểm người chơi" })
+  private pointEffect: Prefab = null;
+
+  @property({ type: Node, tooltip: "" })
+  private tagetPonit: Node = null;
+
+  @property({ type: Node, tooltip: "" })
+  private endPonit: Node = null;
+
   @property({ type: Node, tooltip: "màn thua cuộc" })
   private gameOverScene: Node = null;
 
   private currentIndex: number = 2; // Bắt đầu ở vị trí 3 (index 2)
-  private isMoving: boolean = false;
 
   private direction: number = 1; // Hướng di chuyển (1 là lên, -1 là xuống)
   private elapsedTime: number = 0; // Thời gian đã trôi qua
@@ -59,11 +68,10 @@ export class GameControl extends Component {
 
   protected onDisable(): void {
     this.currentIndex = 2;
-    this.isMoving = false;
     this.direction = 1;
     this.score = 0;
     this.numScore.to(this.score);
-    this.player.active = true;
+    this.player.getChildByPath(`car`).active = true;
 
     this.gameOverScene.active = false;
     this.barrier.removeAllChildren();
@@ -71,19 +79,19 @@ export class GameControl extends Component {
   }
 
   protected start(): void {
-    let body = this.player.getChildByPath(`body`).getComponent(Collider2D);
+    let body = this.player.getChildByPath(`car/body`).getComponent(Collider2D);
     if (body) {
       body.on(Contact2DType.BEGIN_CONTACT, this.onBeginContact, this);
     }
 
-    let pointUp = this.player.getChildByPath(`point`).getComponent(Collider2D);
+    let pointUp = this.player.getChildByPath(`car/point`).getComponent(Collider2D);
     if (pointUp) {
       pointUp.on(Contact2DType.END_CONTACT, this.onEndContact, this);
     }
   }
 
   update(dt: number) {
-    if (this.player && this.player.active) {
+    if (this.player && this.player.getChildByPath(`car`).active) {
       // Cập nhật thời gian
       this.elapsedTime += dt;
 
@@ -103,7 +111,7 @@ export class GameControl extends Component {
   }
 
   onKeyDown(event: EventKeyboard) {
-    if (this.isMoving) return;
+    // if (this.isMoving) return;
 
     switch (event.keyCode) {
       case KeyCode.ARROW_LEFT:
@@ -118,25 +126,20 @@ export class GameControl extends Component {
   moveLeft() {
     if (this.currentIndex > 0) {
       this.currentIndex--;
-      this.smoothMoveTo(GameManager.fixedPositions[this.currentIndex]);
+      this.moveTo(GameManager.fixedPositions[this.currentIndex]);
     }
   }
 
   moveRight() {
     if (this.currentIndex < GameManager.fixedPositions.length - 1) {
       this.currentIndex++;
-      this.smoothMoveTo(GameManager.fixedPositions[this.currentIndex]);
+      this.moveTo(GameManager.fixedPositions[this.currentIndex]);
     }
   }
 
-  smoothMoveTo(targetPosition: Vec3) {
-    this.isMoving = true;
-
+  moveTo(targetPosition: Vec3) {
     tween(this.player)
-      .to(0.3, { position: targetPosition }, { easing: 'sineInOut' }) // Thời gian và hiệu ứng mượt mà
-      .call(() => {
-        this.isMoving = false;
-      })
+      .to(0.3, { position: targetPosition })
       .start();
   }
 
@@ -155,7 +158,7 @@ export class GameControl extends Component {
           otherCollider.node.parent.destroy(); // Xóa node của otherCollider
         }
 
-        this.gameOverScene.active = true;
+        this.gameOver();
       }, 0.03); // Trì hoãn để hàm vật lý xử lý
     }
   }
@@ -170,8 +173,20 @@ export class GameControl extends Component {
         this.numScore.to(this.score);
       }
     }, 0.04);
+    let effectPoint = instantiate(this.pointEffect);
+    effectPoint.parent = this.endPonit;//sua tên sau
+    effectPoint.getComponent(RewardRffect).init(otherCollider.node.parent,this.tagetPonit);
 
   }
+
+  gameOver() {
+    this.gameOverScene.active = true;
+    let hightScore = Number(sys.localStorage.getItem("highScore"));
+    if (this.score > hightScore) {
+      sys.localStorage.setItem("highScore", this.score);
+    }
+  }
+
 }
 
 

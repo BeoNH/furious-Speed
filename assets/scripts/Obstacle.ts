@@ -1,4 +1,4 @@
-import { _decorator, Collider2D, Component, Contact2DType, EPhysics2DDrawFlags, IPhysics2DContact, Node, PhysicsSystem2D, v3 } from 'cc';
+import { _decorator, Collider2D, Component, Contact2DType, EPhysics2DDrawFlags, IPhysics2DContact, Node, PhysicsSystem2D, Sprite, SpriteFrame, v3 } from 'cc';
 import { GameManager } from './GameManager';
 const { ccclass, property } = _decorator;
 
@@ -8,22 +8,17 @@ export class Obstacle extends Component {
     @property({ type: Collider2D, tooltip: "" })
     private flowMove: Collider2D = null;
 
+    @property({ type: SpriteFrame, tooltip: "" })
+    private spriteOb: SpriteFrame[] = [];
+
     speedMove: number;
     onLoad() {
-        // this.debugPhysics();
-        let range = GameManager.speedObstacle;
-        this.speedMove = Math.floor(Math.random() * (range[0] - range[1] + 1)) + range[1];
+        let rangeSpeed = GameManager.speedObstacle;
+        this.speedMove = Math.floor(Math.random() * (rangeSpeed[0] - rangeSpeed[1] + 1)) + rangeSpeed[1];
         this.flowMove.on(Contact2DType.BEGIN_CONTACT, this.onCollision, this);
-    }
 
-    debugPhysics() {
-        PhysicsSystem2D.instance.enable = true;
-        PhysicsSystem2D.instance.debugDrawFlags =
-            EPhysics2DDrawFlags.Aabb |
-            EPhysics2DDrawFlags.Pair |
-            EPhysics2DDrawFlags.CenterOfMass |
-            EPhysics2DDrawFlags.Joint |
-            EPhysics2DDrawFlags.Shape;
+        let numRandom = Math.floor(Math.random() * 11);
+        this.node.getChildByPath(`body`).getComponent(Sprite).spriteFrame = this.spriteOb[numRandom];
     }
 
     protected onDestroy(): void {
@@ -33,7 +28,7 @@ export class Obstacle extends Component {
     update(dt: number) {
         const moveDistance = this.speedMove * dt;
         const posY = this.node.position.y - moveDistance;
-        
+
         if (posY < -660) {
             this.node.destroy();  // Hủy node nếu nó ra khỏi màn hình
         } else {

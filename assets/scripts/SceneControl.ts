@@ -18,8 +18,8 @@ export class SceneControl extends Component {
           console.log("Màn hình nằm dọc (Portrait)");
         }
   
-    //   this.sceneMenu.active = true;
-    //   this.scenePlay.active = false;
+      this.sceneMenu.active = true;
+      this.scenePlay.active = false;
     }
   
     openMenu() {

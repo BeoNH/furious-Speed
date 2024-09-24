@@ -35,7 +35,7 @@ export class GameManager extends Component {
     ];
 
     // Điểm cộng thêm mỗi 1 xe vượt qua được
-    public static readonly scorePlus: number = 40;
+    public static readonly scorePlus: number = 50;
 
     // Điểm cao nhất ghi nhận được
     public static hightScore: number = sys.localStorage.getItem("highScore");

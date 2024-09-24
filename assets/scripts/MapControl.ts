@@ -15,14 +15,14 @@ export class MapControl extends Component {
         MapControl.instantiate = this;
     }
 
-    spawnObstacle() {
-
+    spawnObstacle() {  
+        // Lặp lại nếu trùng với kết quả trước đó
         const getRandomIndex = () => {
             let randomIndex: number;
         
             do {
                 randomIndex = Math.floor(Math.random() * GameManager.fixedXPositions.length);
-            } while (randomIndex === this.previousIndex); // Lặp lại nếu trùng với kết quả trước đó
+            } while (randomIndex === this.previousIndex);
         
             this.previousIndex = randomIndex; // Cập nhật giá trị của kết quả trước đó
             return randomIndex;
