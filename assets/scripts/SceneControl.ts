@@ -9,14 +9,14 @@ export class SceneControl extends Component {
     private sceneMenu: Node = null;
   
     protected onLoad(): void {
-        const screenSize = view.getVisibleSize();
-        if (screenSize.width > screenSize.height) {
-          view.setDesignResolutionSize(950, 640, ResolutionPolicy.EXACT_FIT);
-          console.log("Màn hình nằm ngang (Landscape)");
-        } else {
-          view.setDesignResolutionSize(640, 950, ResolutionPolicy.EXACT_FIT);
-          console.log("Màn hình nằm dọc (Portrait)");
-        }
+        // const screenSize = view.getVisibleSize();
+        // if (screenSize.width > screenSize.height) {
+        //   view.setDesignResolutionSize(950, 640, ResolutionPolicy.EXACT_FIT);
+        //   console.log("Màn hình nằm ngang (Landscape)");
+        // } else {
+        // }
+        view.setDesignResolutionSize(640, 950, ResolutionPolicy.EXACT_FIT);
+        console.log("Màn hình nằm dọc (Portrait)");
   
       this.sceneMenu.active = true;
       this.scenePlay.active = false;
