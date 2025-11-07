@@ -5,8 +5,7 @@ import { NumberScrolling } from './NumberScrolling';
 import { RewardRffect } from './RewardRffect';
 import { vaChamEffect } from './vaChamEffect';
 import { AudioController } from './AudioController';
-import { API } from './API';
-import { APIManager } from './APIManager';
+import { APIManager } from './API_batta/APIManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('GameControl')
@@ -121,7 +120,7 @@ export class GameControl extends Component {
         this.elapsedTime = 0; // Reset thời gian
 
         if (!this.hasMoved_L || !this.hasMoved_R) return;
-        this.score++;// cộng thêm 1 điểm;
+        this.score += GameManager.scoreTime;// cộng thêm 1 điểm;
         this.numScore.to(this.score);
       }
     }
@@ -239,20 +238,24 @@ export class GameControl extends Component {
   }
 
   logSaveScore(num) {
-    const tour = APIManager.urlParam(`tournament`);
-    if (tour && tour == 'true') {
-      API.requestData(`/webhook/tournament`, {
-        gameId: API.gameID,
-        score: num,
-      }, res => { })
-    }
+    const url = `/saveScore`;
+    const data = {
+      "username": APIManager.userDATA?.username,
+      "score": num,
+      "time": 0
+    };
+    APIManager.requestData(url, data, res => {
+      console.log("Kết thúc game => Gửi server:", data, res);
+    });
 
-    const leaderboard = APIManager.urlParam(`leaderboard`);
-    if (leaderboard && leaderboard == 'true')
-      API.requestData(`/webhook/leaderboard`, {
-        gameId: API.gameID,
-        score: num,
-      }, res => { })
+    // Sự kiện BATTA
+    if (num >= 3000) {
+      APIManager.logChallenge(`carSpeedPoint3000`, num);
+    } else if (num >= 2000 && num < 3000) {
+      APIManager.logChallenge(`carSpeedPoint2000`, num);
+    } else if (num >= 100) {
+      APIManager.logChallenge(`carSpeedPoint1000`, num);
+    }
   }
 
 }
