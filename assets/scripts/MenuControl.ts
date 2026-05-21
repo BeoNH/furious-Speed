@@ -19,6 +19,12 @@ export class MenuControl extends Component {
     }
 
     protected onEnable(): void {
+        this.scheduleOnce(() => {
+            this.setHighScore();
+        }, 1)
+    }
+
+    setHighScore() {
         this.hightScore.string = sys.localStorage.getItem("highScore") ? sys.localStorage.getItem("highScore") : 0;
     }
 

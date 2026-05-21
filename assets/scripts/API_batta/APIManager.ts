@@ -16,13 +16,10 @@ export class APIManager extends Component {
 
     public static requestData(key: string, data: any, callBack: (response: any) => void) {
         const url = this.urlAPI + key;
-        // const url = "https://" + this.urlParam("url_api") + key;
-
 
         APIManager.CallRequest(`POST`, data, url, (response) => {
             callBack(response);
         }, (xhr) => {
-            // xhr.setRequestHeader('Authorization', 'Bearer ' + APIManager.urlParam(`token`));
             xhr.setRequestHeader("Content-type", "application/json");
         });
     }
@@ -61,6 +58,7 @@ export class APIManager extends Component {
         let body
         if (data != null)
             body = JSON.stringify({
+                ... this.PARAMS,
                 ...data,
                 "source": APIManager.urlParam("url_api"),
                 "game_name": "furious-speed"
@@ -84,4 +82,13 @@ export class APIManager extends Component {
         var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.search);
         return (results !== null) ? results[1] || 0 : false;
     }
+
+    static PARAMS = (() => {
+        const params = new URLSearchParams(window.location.search);
+        const obj = {};
+        for (const [key, value] of params) {
+            obj[key] = value;
+        }
+        return obj;
+    })();
 }

@@ -1,5 +1,6 @@
-import { _decorator, Component, Label, Node, ResolutionPolicy, view } from 'cc';
+import { _decorator, Component, Label, Node, ResolutionPolicy, sys, view } from 'cc';
 import { APIManager } from './API_batta/APIManager';
+import { MenuControl } from './MenuControl';
 const { ccclass, property } = _decorator;
 
 @ccclass('SceneControl')
@@ -52,9 +53,6 @@ export class SceneControl extends Component {
 
   // Đăng nhập Batta lấy thông tin
   private loginBatta() {
-    // this.popupLogin.active = true;
-    // this.popupLogin.getChildByPath(`txt`).getComponent(Label).string = `Login . . .`;
-
     const data = {
       "token": APIManager.urlParam(`token`),
     };
@@ -64,7 +62,22 @@ export class SceneControl extends Component {
 
       this.popupLogin.active = false;
       APIManager.userDATA = res;
+      this.getHighScore();
     })
+  }
+
+  // Lấy thông tin điểm cao đầu game
+  private getHighScore() {
+    const url = `/getHighestScore`;
+    const data = {
+      "username": APIManager.userDATA?.username,
+    };
+    APIManager.requestData(url, data, res => {
+      if (!res) {
+        return;
+      }
+      sys.localStorage.setItem("highScore", res?.yourInfo?.numScore);
+    });
   }
 }
 
