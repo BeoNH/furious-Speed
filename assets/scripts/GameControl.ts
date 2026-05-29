@@ -1,4 +1,4 @@
-import { _decorator, Collider2D, Component, Contact2DType, EventKeyboard, EventTouch, Input, input, instantiate, IPhysics2DContact, KeyCode, Node, Prefab, ResolutionPolicy, Sprite, SpriteFrame, sys, tween, v3, Vec3, view } from 'cc';
+import { _decorator, Collider2D, Component, Contact2DType, EventKeyboard, EventTouch, Input, input, instantiate, IPhysics2DContact, KeyCode, Label, Node, Prefab, ResolutionPolicy, Sprite, SpriteFrame, sys, tween, v3, Vec3, view } from 'cc';
 import { GameManager } from './GameManager';
 import { MapControl } from './MapControl';
 import { NumberScrolling } from './NumberScrolling';
@@ -233,6 +233,8 @@ export class GameControl extends Component {
     if (this.score > hightScore) {
       sys.localStorage.setItem("highScore", this.score);
     }
+    this.gameOverScene.getChildByPath(`score/num`).getComponent(Label).string = `${this.score}`;
+    this.gameOverScene.getChildByPath(`highScore/num`).getComponent(Label).string = `${hightScore}`;
 
     this.logSaveScore(this.score);
   }
