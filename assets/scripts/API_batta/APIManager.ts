@@ -5,7 +5,7 @@ const { ccclass, property } = _decorator;
 @ccclass('APIManager')
 export class APIManager extends Component {
 
-    public static urlAPI: string = "https://apiminigame-kh.gamebatta.com/api-minigame";// batta
+    public static urlAPI: string = `https://${APIManager.urlParam("url_api")}/game-service/api-minigame`;// batta
 
     // public static sessionID;
     public static userDATA: {
